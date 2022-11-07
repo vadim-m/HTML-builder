@@ -11,7 +11,7 @@ const output = fs.createWriteStream(path.join(__dirname, "output.txt"));
 stdout.write("Тект, который добавится в файл output.txt:\n");
 stdin.on("data", (data) => {
   const text = data.toString();
-  if (text === "exit\n") {
+  if (text.trim() === "exit") {
     closeApp();
   }
   output.write(text);
