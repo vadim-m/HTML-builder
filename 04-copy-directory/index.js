@@ -1,20 +1,28 @@
 const path = require("path");
-const { mkdir, readdir, copyFile } = require("fs/promises");
+const { mkdir, readdir, copyFile, unlink } = require("fs/promises");
 
 copyDir();
 
 async function copyDir() {
   try {
-    const filesInFolder = await readdir(path.join(__dirname, "files"));
-    const createNewDir = await mkdir(path.join(__dirname, "files-copy"), {
+    const filesStartInFolder = await readdir(path.join(__dirname, "files"));
+
+    await mkdir(path.join(__dirname, "files-copy"), {
       recursive: true,
     });
 
-    filesInFolder.forEach((file) => {
+    const filesInCopyFolder = await readdir(path.join(__dirname, "files-copy"));
+    await Promise.all(
+      filesInCopyFolder.map((f) =>
+        unlink(path.join(__dirname, "files-copy", f))
+      )
+    );
+
+    filesStartInFolder.forEach((file) => {
       copyFileToNewDirectory(file);
     });
   } catch (err) {
-    console.error(err.message);
+    console.error(err.message, "turtu");
   }
 }
 
